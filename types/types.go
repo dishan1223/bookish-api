@@ -18,6 +18,6 @@ type Books struct {
     Pages       uint    `json:"pages" validate:"required,gt=0"`
     Price       float64 `json:"price" validate:"required,gt=0"`
     Author      string  `json:"author" validate:"required,min=2,max=100"`
-    Buy         string  `json:"buy" validate:"url"`
+    Link        string  `json:"link" validate:"url"`
 }
 
