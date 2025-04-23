@@ -29,12 +29,15 @@ func main() {
         panic("Failed to migrate table")
     }
 
+    // initializing the controller
     controller.Init(DB, validate)
 
+    // routes handlers
     http.HandleFunc("/", middleware.Logger(controller.Home))
     http.HandleFunc("/api/v1/books", middleware.Logger(controller.GetBooks))
     http.HandleFunc("/api/v1/books/add", middleware.Logger(controller.AddBook))
 
+    // initializing the server
     s := types.Server{"127.0.0.1:3000"}
     log.Println("Server is running on http://" + s.Addr)
     log.Fatal(http.ListenAndServe(s.Addr, nil))
