@@ -2,15 +2,19 @@ package main
 
 import (
     "log"
+    "os"
     "net/http"
     "github.com/go-playground/validator/v10"
-    "gorm.io/driver/sqlite"
     "gorm.io/gorm"
+    "github.com/joho/godotenv"
+    "gorm.io/driver/postgres"
     "github.com/dishan1223/bookish-api/types"
     "github.com/dishan1223/bookish-api/controller"
     "github.com/dishan1223/bookish-api/middleware"
 )
 
+
+// Globals
 var DB *gorm.DB
 var validate *validator.Validate
 
@@ -19,14 +23,26 @@ var validate *validator.Validate
 func main() {
     validate = validator.New()
 
-    var err error
-    DB, err = gorm.Open(sqlite.Open("database.db"), &gorm.Config{})
-    if err != nil {
-        panic("Failed to connect database")
+    // load environment variables
+    if err := godotenv.Load(); err != nil {
+        log.Fatal("Error loading .env file")
     }
 
+    // DB CONNECTION STRING
+    dsn := os.Getenv("DB_CONNECTION_STRING")
+    if dsn == "" {
+        log.Fatal("DB_CONNECTION_STRING is not set")
+    }
+
+    var err error
+    DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{}) 
+    if err != nil {
+        panic("Failed to connect to database")
+    }
+
+    // migrate the schema
     if err := DB.AutoMigrate(&types.Books{}); err != nil {
-        panic("Failed to migrate table")
+       panic("Failed to migrate schema") 
     }
 
     // initializing the controller
