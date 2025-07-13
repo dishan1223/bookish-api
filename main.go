@@ -54,7 +54,7 @@ func main() {
     http.HandleFunc("/api/v1/books/add", middleware.Logger(controller.AddBook))
 
     // initializing the server
-    s := types.Server{"127.0.0.1:3000"}
+    s := types.Server{"127.0.0.1:10000"}
     log.Println("Server is running on http://" + s.Addr)
     log.Fatal(http.ListenAndServe(s.Addr, nil))
 }
